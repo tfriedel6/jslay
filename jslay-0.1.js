@@ -82,7 +82,7 @@ var jslay = {};
             var token = tokens[i];
             if (token[0] == 'operator') {
                 var precedence = findPrecedence(token[1]);
-                if (operatorStack.length > 0 && operatorStack[operatorStack.length - 1][0] <= precedence) {
+                while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1][0] <= precedence) {
                     createSubExpression();
                 }
                 operatorStack.push([ precedence, token[1] ]);
