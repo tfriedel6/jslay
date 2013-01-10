@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jslay demo 1</title>
+        <script type="text/javascript" src="jslay-0.1.1.js"></script>
+        <script type="text/javascript">
+            function init() {
+                jslay.setRule( 'button1', '10', '10', '100', '50' );
+                jslay.setRule( 'button2', '#button1.left', '#button1.bottom + 10', '#button1.width', '#button1.height' );
+                jslay.setRule( 'button3', '10', '#main.bottom - #button3.height - 10', '#main.width - 20', '50' );
+                jslay.setRule( 'table', '#button1.right + 10', '10', '#main.width - 10 - #table.left', '#button3.top - 20' );
+                jslay.layout();
+                window.onresize = function() {
+                    jslay.layout();
+                };
+                console.log( document.getElementById( 'main' ).offsetHeight );
+            }
+        </script>
+        <style type="text/css">
+            body {
+                overflow: hidden;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+
+            * {
+                border: 0;
+                padding: 0;
+                margin: 0;
+            }
+
+            .button, #table {
+                background-color: lightgrey;
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body id="main" onload="init()">
+        <div id="button1" class="button">Button 1</div>
+        <div id="button2" class="button">Button 2</div>
+        <div id="button3" class="button">Button 3</div>
+        <table id="table">
+            <tbody>
+                <tr><td>A1</td><td>B1</td><td>C1</td><td>D1</td><td>E1</td><td>F1</td></tr>
+                <tr><td>A2</td><td>B2</td><td>C2</td><td>D2</td><td>E2</td><td>F2</td></tr>
+                <tr><td>A3</td><td>B3</td><td>C3</td><td>D3</td><td>E3</td><td>F3</td></tr>
+                <tr><td>A4</td><td>B4</td><td>C4</td><td>D4</td><td>E4</td><td>F4</td></tr>
+                <tr><td>A5</td><td>B5</td><td>C5</td><td>D5</td><td>E5</td><td>F5</td></tr>
+                <tr><td>A6</td><td>B6</td><td>C6</td><td>D6</td><td>E6</td><td>F6</td></tr>
+                <tr><td>A7</td><td>B7</td><td>C7</td><td>D7</td><td>E7</td><td>F7</td></tr>
+            </tbody>
+        </table>
+    </body>
+</html>

@@ -1,25 +1,52 @@
 var jslay = {};
 (function () {
-    jslay.rules = [];
+    var rules = [];
     var rulesDirty = false;
 
-    jslay.add = function (element, left, top, width, height) {
+    jslay.setRule = function (element, left, top, width, height) {
         if (typeof( element ) == 'string') {
             var id = element;
             element = document.getElementById(id);
         }
         element.style.position = 'absolute';
 
+        deleteExistingRule(element, 'left');
         addLayoutRule(element, 'left', left);
+        deleteExistingRule(element, 'top');
         addLayoutRule(element, 'top', top);
+        deleteExistingRule(element, 'width');
         addLayoutRule(element, 'width', width);
+        deleteExistingRule(element, 'height');
         addLayoutRule(element, 'height', height);
 
         rulesDirty = true;
     };
 
+    function findExistingRule(element, property) {
+        for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
+            if (rule.element == element && rule.property == property) {
+                return rule;
+            }
+        }
+        return null;
+    }
+
+    function deleteExistingRule(element, property) {
+        var result = null;
+        for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
+            if (rule.element == element && rule.property == property) {
+                result = rule;
+                console.log('removing');
+                rules.splice(i, 1);
+            }
+        }
+        return result;
+    }
+
     function addLayoutRule(element, property, rule) {
-        jslay.rules.push({
+        rules.push({
             element: element,
             property: property,
             rule: compile(lex(rule)),
@@ -90,7 +117,7 @@ var jslay = {};
                 expressionStack.push([ 'operand', token ]);
             }
         }
-        while( operatorStack.length > 0 ) {
+        while (operatorStack.length > 0) {
             createSubExpression();
         }
         return expressionStack.pop();
@@ -113,14 +140,14 @@ var jslay = {};
         return -1;
     }
 
-    jslay.buildRules = function() {
-        if( rulesDirty ) {
+    jslay.buildRules = function () {
+        if (rulesDirty) {
             rulesDirty = false;
 
-            for( var i = 0; i < jslay.rules.length; i++ ) {
-                jslay.rules[i].dependencies = [];
-                findDependencies(jslay.rules[i], jslay.rules[i].rule);
-                jslay.rules[i].dependencies = removeDuplicates(jslay.rules[i].dependencies);
+            for (var i = 0; i < rules.length; i++) {
+                rules[i].dependencies = [];
+                findDependencies(rules[i], rules[i].rule);
+                rules[i].dependencies = removeDuplicates(rules[i].dependencies);
             }
 
             sortElementLayoutOrder();
@@ -128,15 +155,22 @@ var jslay = {};
     };
 
     function findDependencies(rootRule, expression) {
-        if(expression[0] == 'expression') {
-            if(expression[2] == '.') {
-                var left = run( expression[1] );
-                var right = run( expression[3] );
-                for( var i = 0; i < jslay.rules.length; i++ ) {
-                    var rule = jslay.rules[i];
-                    if( rule.element == left && rule.property == right ) {
+        if (expression[0] == 'expression') {
+            if (expression[2] == '.') {
+                var left = run(expression[1]);
+                var right = run(expression[3]);
+                var properties;
+                if( right == 'bottom' ) {
+                    properties = [ 'top', 'height' ];
+                } else if( right == 'right' ) {
+                    properties = [ 'left', 'width' ];
+                } else {
+                    properties = [ right ];
+                }
+                for( var i = 0; i < properties.length; i++ ) {
+                    var rule = findExistingRule( left, properties[i] );
+                    if( rule ) {
                         rootRule.dependencies.push(rule);
-                        break;
                     }
                 }
             } else {
@@ -164,42 +198,42 @@ var jslay = {};
 
     function sortElementLayoutOrder() {
         var reordered = [];
-        for( var i = 0; i < jslay.rules.length; i++ ) {
-            var rule = jslay.rules[i];
+        for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
             var exists = false;
-            for( var j = 0; j < reordered.length; j++ ) {
-                if( reordered[j] == rule ) {
+            for (var j = 0; j < reordered.length; j++) {
+                if (reordered[j] == rule) {
                     exists = true;
                     break;
                 }
             }
-            if( !exists ) {
-                addInOrder( rule, [] );
+            if (!exists) {
+                addInOrder(rule, []);
             }
         }
-        jslay.rules = reordered;
+        rules = reordered;
 
-        function addInOrder( rule, elementStack ) {
-            for( var j = 0; j < elementStack.length; j++ ) {
-                if( rule.element == elementStack[j] ) {
+        function addInOrder(rule, elementStack) {
+            for (var j = 0; j < elementStack.length; j++) {
+                if (rule.element == elementStack[j]) {
                     return;
                 }
             }
-            if( rule.dependencies.length > 0 ) {
-                elementStack.push( rule.element );
-                for( j = 0; j < rule.dependencies.length; j++ ) {
-                    addInOrder( rule.dependencies[j], elementStack );
+            if (rule.dependencies.length > 0) {
+                elementStack.push(rule.element);
+                for (j = 0; j < rule.dependencies.length; j++) {
+                    addInOrder(rule.dependencies[j], elementStack);
                 }
                 elementStack.pop();
             }
-            reordered.push( rule );
+            reordered.push(rule);
         }
     }
 
     jslay.layout = function () {
         jslay.buildRules();
-        for (var i = 0; i < jslay.rules.length; i++) {
-            var rule = jslay.rules[i];
+        for (var i = 0; i < rules.length; i++) {
+            var rule = rules[i];
             var element = rule.element;
             var result = run(rule.rule);
             element.style[rule.property] = result + 'px';
@@ -221,6 +255,10 @@ var jslay = {};
                     return left.offsetTop;
                 } else if (right == 'height') {
                     return left.offsetHeight;
+                } else if (right == 'right') {
+                    return left.offsetLeft + left.offsetWidth;
+                } else if (right == 'bottom') {
+                    return left.offsetTop + left.offsetHeight;
                 }
             } else if (operator == '+') {
                 return left + right;
