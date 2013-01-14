@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>jslay demo 1</title>
-        <script type="text/javascript" src="jslay-0.2.0.js"></script>
+        <title>slayout demo 1</title>
+        <script type="text/javascript" src="slayout-0.2.0.js"></script>
         <script type="text/javascript">
             function init() {
-                jslay.setRule( 'button1', '10', '10', '100', '50' );
-                jslay.setRule( 'button2', '#button1.left', '#button1.bottom + 10', '#button1.width', '#button1.height' );
-                jslay.setRule( 'button3', '10', '#main.bottom - #button3.height - 10', '#main.width - 20', '50' );
-                jslay.setRule( 'table', '#button1.right + 10', '10', '#main.width - 10 - #table.left', '#button3.top - 20' );
-                jslay.layout();
+                slayout.setRule( 'button1', '10', '10', '100', '50' );
+                slayout.setRule( 'button2', '#button1.left', '#button1.bottom + 10', '#button1.width', '#button1.height' );
+                slayout.setRule( 'button3', '10', '#main.bottom - #button3.height - 10', '#main.width - 20', '50' );
+                slayout.setRule( 'table', '#button1.right + 10', '10', '#main.width - 10 - #table.left', '#button3.top - 20' );
+                slayout.layout();
                 window.onresize = function() {
-                    jslay.layout();
+                    slayout.layout();
                 };
                 console.log( document.getElementById( 'main' ).offsetHeight );
             }

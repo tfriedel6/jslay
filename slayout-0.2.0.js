@@ -1,9 +1,9 @@
-var jslay = {};
+var slayout = {};
 (function () {
     var rules = [];
     var rulesDirty = false;
 
-    jslay.setRule = function (element, left, top, width, height) {
+    slayout.setRule = function (element, left, top, width, height) {
         if (typeof( element ) == 'string') {
             var id = element;
             element = document.getElementById(id);
@@ -140,7 +140,7 @@ var jslay = {};
         return -1;
     }
 
-    jslay.buildRules = function () {
+    slayout.buildRules = function () {
         if (rulesDirty) {
             rulesDirty = false;
 
@@ -230,8 +230,8 @@ var jslay = {};
         }
     }
 
-    jslay.layout = function () {
-        jslay.buildRules();
+    slayout.layout = function () {
+        slayout.buildRules();
         for (var i = 0; i < rules.length; i++) {
             var rule = rules[i];
             var element = rule.element;
