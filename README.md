@@ -18,3 +18,6 @@ Version History
 - Layout rules are now overwritten instead of added if they already exist
 - Right and bottom properties can now be used in layout rules
 
+0.2.1
+- Parenthesis support in expressions
+

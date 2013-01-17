@@ -59,7 +59,8 @@ var slayout = {};
         element: /#[a-zA-Z_][a-zA-Z0-9_]*/,
         name: /[a-zA-Z_][a-zA-Z0-9_]*/,
         number: /([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)/,
-        operator: /[\+\-\*\/\.]/
+        operator: /[\+\-\*\/\.]/,
+        parenthesis: /[\(\)]/
     };
 
     function lex(expression) {
@@ -113,6 +114,17 @@ var slayout = {};
                     createSubExpression();
                 }
                 operatorStack.push([ precedence, token[1] ]);
+            } else if (token[0] == 'parenthesis') {
+                if (token[1] == '(') {
+                    operatorStack.push([ operators.length, token[1] ]);
+                } else if (token[1] == ')') {
+                    while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1][1] != '(') {
+                        createSubExpression();
+                    }
+                    if (operatorStack.length > 0) {
+                        operatorStack.pop();
+                    }
+                }
             } else {
                 expressionStack.push([ 'operand', token ]);
             }
@@ -160,16 +172,16 @@ var slayout = {};
                 var left = run(expression[1]);
                 var right = run(expression[3]);
                 var properties;
-                if( right == 'bottom' ) {
+                if (right == 'bottom') {
                     properties = [ 'top', 'height' ];
-                } else if( right == 'right' ) {
+                } else if (right == 'right') {
                     properties = [ 'left', 'width' ];
                 } else {
                     properties = [ right ];
                 }
-                for( var i = 0; i < properties.length; i++ ) {
-                    var rule = findExistingRule( left, properties[i] );
-                    if( rule ) {
+                for (var i = 0; i < properties.length; i++) {
+                    var rule = findExistingRule(left, properties[i]);
+                    if (rule) {
                         rootRule.dependencies.push(rule);
                     }
                 }
