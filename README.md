@@ -21,3 +21,6 @@ Version History
 0.2.1
 - Parenthesis support in expressions
 
+0.3.0
+- Added support for user-defined constants
+

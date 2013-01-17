@@ -2,13 +2,14 @@
 <html>
     <head>
         <title>slayout demo 1</title>
-        <script type="text/javascript" src="slayout-0.2.1.js"></script>
+        <script type="text/javascript" src="slayout-0.3.0.js"></script>
         <script type="text/javascript">
             function init() {
-                slayout.setRule( 'button1', '10', '10', '100', '50' );
-                slayout.setRule( 'button2', '#button1.left', '#button1.bottom + 10', '#button1.width', '#button1.height' );
-                slayout.setRule( 'button3', '10', '#main.bottom - #button3.height - 10', '#main.width - 20', '50' );
-                slayout.setRule( 'table', '#button1.right + 10', '10', '#main.width - 10 - #table.left', '#button3.top - 20' );
+                slayout.setConstant( 'padding', 10 );
+                slayout.setRule( 'button1', 'padding', 'padding', '100', '50' );
+                slayout.setRule( 'button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height' );
+                slayout.setRule( 'button3', 'padding', '#main.bottom - #button3.height - padding', '#main.width - 2 * padding', '50' );
+                slayout.setRule( 'table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#button3.top - 2 * padding' );
                 slayout.layout();
                 window.onresize = function() {
                     slayout.layout();

@@ -2,6 +2,11 @@ var slayout = {};
 (function () {
     var rules = [];
     var rulesDirty = false;
+    var constants = {};
+
+    slayout.setConstant = function (name, value) {
+        constants[name] = value;
+    };
 
     slayout.setRule = function (element, left, top, width, height) {
         if (typeof( element ) == 'string') {
@@ -138,6 +143,9 @@ var slayout = {};
             var operator = operatorStack.pop();
             var right = expressionStack.pop();
             var left = expressionStack.pop();
+            if( operator[1] == '.' ) {
+                right[1][0] = 'property';
+            }
             var subExpression = [ 'expression', left, operator[1], right ];
             expressionStack.push(subExpression);
         }
@@ -287,6 +295,8 @@ var slayout = {};
             var result;
             if (tokenType == 'element') {
                 result = document.getElementById(token[1]);
+            } else if (tokenType == 'name') {
+                result = constants[token[1]];
             } else {
                 result = token[1];
             }
