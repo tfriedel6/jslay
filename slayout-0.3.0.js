@@ -44,6 +44,7 @@ var slayout = {};
             if (rule.element == element && rule.property == property) {
                 result = rule;
                 rules.splice(i, 1);
+                i--;
             }
         }
         return result;
