@@ -16,12 +16,12 @@ var slayout = {};
         element.style.position = 'absolute';
 
         deleteExistingRule(element, 'left');
-        addLayoutRule(element, 'left', left);
         deleteExistingRule(element, 'top');
-        addLayoutRule(element, 'top', top);
         deleteExistingRule(element, 'width');
-        addLayoutRule(element, 'width', width);
         deleteExistingRule(element, 'height');
+        addLayoutRule(element, 'left', left);
+        addLayoutRule(element, 'top', top);
+        addLayoutRule(element, 'width', width);
         addLayoutRule(element, 'height', height);
 
         rulesDirty = true;
