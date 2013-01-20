@@ -43,7 +43,6 @@ var slayout = {};
             var rule = rules[i];
             if (rule.element == element && rule.property == property) {
                 result = rule;
-                console.log('removing');
                 rules.splice(i, 1);
             }
         }
