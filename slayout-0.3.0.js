@@ -9,12 +9,6 @@ var slayout = {};
     };
 
     slayout.setRule = function (element, left, top, width, height) {
-        if (typeof( element ) == 'string') {
-            var id = element;
-            element = document.getElementById(id);
-        }
-        element.style.position = 'absolute';
-
         deleteExistingRule(element, 'left');
         deleteExistingRule(element, 'top');
         deleteExistingRule(element, 'width');
@@ -177,8 +171,8 @@ var slayout = {};
     function findDependencies(rootRule, expression) {
         if (expression[0] == 'expression') {
             if (expression[2] == '.') {
-                var left = run(expression[1]);
-                var right = run(expression[3]);
+                var left = expression[1];
+                var right = expression[3];
                 var properties;
                 if (right == 'bottom') {
                     properties = [ 'top', 'height' ];
@@ -256,7 +250,7 @@ var slayout = {};
             var rule = rules[i];
             var element = rule.element;
             var result = run(rule.rule);
-            element.style[rule.property] = result + 'px';
+            document.getElementById( element ).style[rule.property] = result + 'px';
         }
     };
 
