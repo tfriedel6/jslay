@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>slayout demo 1</title>
-        <script type="text/javascript" src="slayout-0.3.0.js"></script>
+        <title>jslay demo 1</title>
+        <script type="text/javascript" src="jslay-0.3.1.js"></script>
         <script type="text/javascript">
             function init() {
-                slayout.setConstant( 'padding', 10 );
-                slayout.setRule( 'button1', 'padding', 'padding', '100', '50' );
-                slayout.setRule( 'button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height' );
-                slayout.setRule( 'button3', 'padding', '#main.bottom - #button3.height - padding', '#main.width - 2 * padding', '50' );
-                slayout.setRule( 'table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#button3.top - 2 * padding' );
-                slayout.layout();
+                jslay.setConstant( 'padding', 10 );
+                jslay.setRule( 'button1', 'padding', 'padding', '100', '50' );
+                jslay.setRule( 'button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height' );
+                jslay.setRule( 'button3', 'padding', '#main.bottom - #button3.height - padding', '#main.width - 2 * padding', '50' );
+                jslay.setRule( 'table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#button3.top - 2 * padding' );
+                jslay.layout();
                 window.onresize = function() {
-                    slayout.layout();
+                    jslay.layout();
                 };
             }
         </script>

@@ -1,14 +1,14 @@
-var slayout = {};
+var jslay = {};
 (function () {
     var rules = [];
     var rulesDirty = false;
     var constants = {};
 
-    slayout.setConstant = function (name, value) {
+    jslay.setConstant = function (name, value) {
         constants[name] = value;
     };
 
-    slayout.setRule = function (element, left, top, width, height) {
+    jslay.setRule = function (element, left, top, width, height) {
         deleteExistingRule(element, 'left');
         deleteExistingRule(element, 'top');
         deleteExistingRule(element, 'width');
@@ -154,7 +154,7 @@ var slayout = {};
         return -1;
     }
 
-    slayout.buildRules = function () {
+    function buildRules() {
         if (rulesDirty) {
             rulesDirty = false;
 
@@ -166,7 +166,7 @@ var slayout = {};
 
             sortElementLayoutOrder();
         }
-    };
+    }
 
     function findDependencies(rootRule, expression) {
         if (expression[0] == 'expression') {
@@ -214,14 +214,7 @@ var slayout = {};
         var reordered = [];
         for (var i = 0; i < rules.length; i++) {
             var rule = rules[i];
-            var exists = false;
-            for (var j = 0; j < reordered.length; j++) {
-                if (reordered[j] == rule) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists) {
+            if (reordered.indexOf( rule ) == -1) {
                 addInOrder(rule, []);
             }
         }
@@ -244,8 +237,8 @@ var slayout = {};
         }
     }
 
-    slayout.layout = function () {
-        slayout.buildRules();
+    jslay.layout = function () {
+        buildRules();
         for (var i = 0; i < rules.length; i++) {
             var rule = rules[i];
             var element = rule.element;
