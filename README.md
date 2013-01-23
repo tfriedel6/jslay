@@ -8,6 +8,9 @@ A simple, experimental JavaScript library to layout elements relative to each ot
 Version History
 ===============
 
+0.3.2
+- Fixed a dependency bug
+
 0.3.1
 - Code cleanup
 

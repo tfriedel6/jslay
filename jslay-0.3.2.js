@@ -171,8 +171,8 @@ var jslay = {};
     function findDependencies(rootRule, expression) {
         if (expression[0] == 'expression') {
             if (expression[2] == '.') {
-                var left = expression[1];
-                var right = expression[3];
+                var left = expression[1][1][1];
+                var right = expression[3][1][1];
                 var properties;
                 if (right == 'bottom') {
                     properties = [ 'top', 'height' ];
