@@ -257,6 +257,11 @@ var jslay = {};
     }
 
     jslay.layout = function() {
+        var elementPositions = jslay.getLayout();
+        jslay.applyLayout( elementPositions );
+    };
+
+    jslay.getLayout = function() {
         buildRules();
         var elementPositions = {};
         for( var i = 0; i < elements.length; i++ ) {
@@ -274,9 +279,13 @@ var jslay = {};
             elementName = rule.element;
             elementPositions[elementName][rule.property] = run( rule.rule, elementPositions );
         }
-        for( i = 0; i < elements.length; i++ ) {
-            elementName = elements[i];
-            element = document.getElementById( elementName );
+        return elementPositions;
+    };
+
+    jslay.applyLayout = function( elementPositions ) {
+        for( var i = 0; i < elements.length; i++ ) {
+            var elementName = elements[i];
+            var element = document.getElementById( elementName );
             var elementPosition = elementPositions[elementName];
             element.style.left = elementPosition.left + 'px';
             element.style.top = elementPosition.top + 'px';
