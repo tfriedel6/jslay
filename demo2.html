@@ -16,39 +16,39 @@
 
             function screen1() {
                 jslay.clear();
-                jslay.setConstant( 'padding', 10 );
-                jslay.setRule( 'button1', 'padding', 'padding', '100', '50' );
-                jslay.setRule( 'button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height' );
-                jslay.setRule( 'button3', 'padding', '#main.bottom', '#main.width - 2 * padding', '100' );
-                jslay.setRule( 'table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#main.bottom - 2 * padding' );
-                animate( jslay.getLayout() );
+                jslay.setConstant('padding', 10);
+                jslay.setRule('button1', 'padding', 'padding', '100', '50');
+                jslay.setRule('button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height');
+                jslay.setRule('button3', 'padding', '#main.bottom', '#main.width - 2 * padding', '100');
+                jslay.setRule('table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#main.bottom - 2 * padding');
+                animate(jslay.getLayout());
             }
 
             function screen2() {
                 jslay.clear();
-                jslay.setConstant( 'padding', 30 );
-                jslay.setRule( 'button1', 'padding', 'padding', '150', '80' );
-                jslay.setRule( 'button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height' );
-                jslay.setRule( 'button3', 'padding', '#main.bottom - #button3.height - padding', '#main.width - 2 * padding', '100' );
-                jslay.setRule( 'table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#button3.top - 2 * padding' );
-                animate( jslay.getLayout() );
+                jslay.setConstant('padding', 30);
+                jslay.setRule('button1', 'padding', 'padding', '150', '80');
+                jslay.setRule('button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height');
+                jslay.setRule('button3', 'padding', '#main.bottom - #button3.height - padding', '#main.width - 2 * padding', '100');
+                jslay.setRule('table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#button3.top - 2 * padding');
+                animate(jslay.getLayout());
             }
 
-            function animate( positions ) {
-                if( firstTime ) {
-                    jslay.applyLayout( positions );
+            function animate(positions) {
+                if(firstTime) {
+                    jslay.applyLayout(positions);
                     firstTime = false;
                     return;
                 }
-                for( var elementName in positions ) {
-                    if( positions.hasOwnProperty( elementName ) ) {
+                for(var elementName in positions) {
+                    if(positions.hasOwnProperty(elementName)) {
                         var position = positions[elementName];
-                        $( '#' + elementName ).animate( {
+                        $('#' + elementName).animate({
                             left: position.left + 'px',
                             top: position.top + 'px',
                             width: position.width + 'px',
                             height: position.height + 'px'
-                        }, 400 );
+                        }, 400);
                     }
                 }
             }
