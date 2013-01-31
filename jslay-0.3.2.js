@@ -8,6 +8,10 @@ var jslay = {};
         constants[name] = value;
     };
 
+    jslay.clearConstants = function () {
+        constants = {};
+    };
+
     jslay.setRule = function (element, left, top, width, height) {
         deleteExistingRule(element, 'left');
         deleteExistingRule(element, 'top');
@@ -19,6 +23,15 @@ var jslay = {};
         addLayoutRule(element, 'height', height);
 
         rulesDirty = true;
+    };
+
+    jslay.clearRules = function () {
+        rules = [];
+    };
+
+    jslay.clear = function () {
+        rules = [];
+        constants = {};
     };
 
     function findExistingRule(element, property) {
