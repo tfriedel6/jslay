@@ -4,6 +4,8 @@ var jslay = {};
     var rulesDirty = false;
     var constants = {};
 
+    var elements = [];
+
     jslay.setConstant = function( name, value ) {
         constants[name] = value;
     };
@@ -172,6 +174,10 @@ var jslay = {};
             rulesDirty = false;
 
             for( var i = 0; i < rules.length; i++ ) {
+                var element = rules[i].element;
+                if( elements.indexOf( element ) == -1 ) {
+                    elements.push( element );
+                }
                 rules[i].dependencies = [];
                 findDependencies( rules[i], rules[i].rule );
                 rules[i].dependencies = removeDuplicates( rules[i].dependencies );
@@ -252,33 +258,56 @@ var jslay = {};
 
     jslay.layout = function() {
         buildRules();
-        for( var i = 0; i < rules.length; i++ ) {
+        var elementPositions = {};
+        for( var i = 0; i < elements.length; i++ ) {
+            var elementName = elements[i];
+            var element = document.getElementById( elementName );
+            elementPositions[elementName] = {
+                left: element.offsetLeft,
+                top: element.offsetTop,
+                width: element.offsetWidth,
+                height: element.offsetHeight
+            };
+        }
+        for( i = 0; i < rules.length; i++ ) {
             var rule = rules[i];
-            var element = rule.element;
-            var result = run( rule.rule );
-            document.getElementById( element ).style[rule.property] = result + 'px';
+            elementName = rule.element;
+            elementPositions[elementName][rule.property] = run( rule.rule, elementPositions );
+        }
+        for( i = 0; i < elements.length; i++ ) {
+            elementName = elements[i];
+            element = document.getElementById( elementName );
+            var elementPosition = elementPositions[elementName];
+            element.style.left = elementPosition.left + 'px';
+            element.style.top = elementPosition.top + 'px';
+            element.style.width = elementPosition.width + 'px';
+            element.style.height = elementPosition.height + 'px';
         }
     };
 
-    function run( expression ) {
+    function run( expression, elementPositions ) {
         var expressionType = expression[0];
         if( expressionType == 'expression' ) {
-            var left = run( expression[1] );
+            var left = run( expression[1], elementPositions );
             var operator = expression[2];
-            var right = run( expression[3] );
+            var right = run( expression[3], elementPositions );
             if( operator == '.' ) {
-                if( right == 'left' ) {
-                    return left.offsetLeft;
-                } else if( right == 'width' ) {
-                    return left.offsetWidth;
-                } else if( right == 'top' ) {
-                    return left.offsetTop;
-                } else if( right == 'height' ) {
-                    return left.offsetHeight;
-                } else if( right == 'right' ) {
-                    return left.offsetLeft + left.offsetWidth;
+                var elementPosition = elementPositions[left];
+                if( elementPosition == null ) {
+                    var element = document.getElementById( left );
+                    elementPosition = {
+                        left: element.offsetLeft,
+                        top: element.offsetTop,
+                        width: element.offsetWidth,
+                        height: element.offsetHeight
+                    };
+                }
+                if( right == 'right' ) {
+                    return elementPosition.left + elementPosition.width;
                 } else if( right == 'bottom' ) {
-                    return left.offsetTop + left.offsetHeight;
+                    return elementPosition.top + elementPosition.height;
+                } else {
+                    return elementPosition[right];
                 }
             } else if( operator == '+' ) {
                 return left + right;
@@ -293,9 +322,7 @@ var jslay = {};
             var token = expression[1];
             var tokenType = token[0];
             var result;
-            if( tokenType == 'element' ) {
-                result = document.getElementById( token[1] );
-            } else if( tokenType == 'name' ) {
+            if( tokenType == 'name' ) {
                 result = constants[token[1]];
             } else {
                 result = token[1];
