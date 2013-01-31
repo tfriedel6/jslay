@@ -21,13 +21,7 @@
                 jslay.setRule( 'button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height' );
                 jslay.setRule( 'button3', 'padding', '#main.bottom', '#main.width - 2 * padding', '100' );
                 jslay.setRule( 'table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#main.bottom - 2 * padding' );
-                var positions = jslay.getLayout();
-                if( firstTime ) {
-                    jslay.applyLayout( positions );
-                } else {
-                    animate( positions );
-                }
-                firstTime = false;
+                animate( jslay.getLayout() );
             }
 
             function screen2() {
@@ -37,11 +31,15 @@
                 jslay.setRule( 'button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height' );
                 jslay.setRule( 'button3', 'padding', '#main.bottom - #button3.height - padding', '#main.width - 2 * padding', '100' );
                 jslay.setRule( 'table', '#button1.right + padding', 'padding', '#main.width - padding - #table.left', '#button3.top - 2 * padding' );
-                var positions = jslay.getLayout();
-                animate( positions );
+                animate( jslay.getLayout() );
             }
 
             function animate( positions ) {
+                if( firstTime ) {
+                    jslay.applyLayout( positions );
+                    firstTime = false;
+                    return;
+                }
                 for( var elementName in positions ) {
                     if( positions.hasOwnProperty( elementName ) ) {
                         var position = positions[elementName];
