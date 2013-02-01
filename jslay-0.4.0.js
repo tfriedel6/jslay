@@ -69,12 +69,12 @@ var jslay = {};
     }
 
     var tokenDefinitions = [
-        [ 'whitespace', /[ \t]+/ ],
-        [ 'element', /#[a-zA-Z_][a-zA-Z0-9_]*/ ],
-        [ 'name', /[a-zA-Z_][a-zA-Z0-9_]*/ ],
-        [ 'number', /([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)/ ],
-        [ 'operator', /[\+\-\*\/\.]/ ],
-        [ 'parenthesis', /[\(\)]/ ]
+        [ 'whitespace', /^[ \t]+/ ],
+        [ 'element', /^#[a-zA-Z_][a-zA-Z0-9_]*/ ],
+        [ 'name', /^[a-zA-Z_][a-zA-Z0-9_]*/ ],
+        [ 'number', /^([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)/ ],
+        [ 'operator', /^[\+\-\*\/\.]/ ],
+        [ 'parenthesis', /^[\(\)]/ ]
     ];
 
     function lex(expression) {
