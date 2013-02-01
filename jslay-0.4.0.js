@@ -68,40 +68,40 @@ var jslay = {};
         });
     }
 
-    var tokenDefinitions = {
-        whitespace: /[ \t]+/,
-        element: /#[a-zA-Z_][a-zA-Z0-9_]*/,
-        name: /[a-zA-Z_][a-zA-Z0-9_]*/,
-        number: /([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)/,
-        operator: /[\+\-\*\/\.]/,
-        parenthesis: /[\(\)]/
-    };
+    var tokenDefinitions = [
+        [ 'whitespace', /[ \t]+/ ],
+        [ 'element', /#[a-zA-Z_][a-zA-Z0-9_]*/ ],
+        [ 'name', /[a-zA-Z_][a-zA-Z0-9_]*/ ],
+        [ 'number', /([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)/ ],
+        [ 'operator', /[\+\-\*\/\.]/ ],
+        [ 'parenthesis', /[\(\)]/ ]
+    ];
 
     function lex(expression) {
         var result = [];
         while(expression.length > 0) {
             var found = false;
-            for(var type in tokenDefinitions) {
-                if(tokenDefinitions.hasOwnProperty(type)) {
-                    var regexp = tokenDefinitions[type];
-                    var match = regexp.exec(expression);
-                    if(match && match.length > 0 && match.index == 0) {
-                        var matchedString = match[0];
-                        if(type != 'whitespace') {
-                            var value;
-                            if(type == 'number') {
-                                value = Number(matchedString);
-                            } else if(type == 'element') {
-                                value = matchedString.substr(1);
-                            } else {
-                                value = matchedString;
-                            }
-                            result.push([ type, value ]);
+            for(var i = 0; i < tokenDefinitions.length; i++) {
+                var tokenDefinition = tokenDefinitions[i];
+                var type = tokenDefinition[0];
+                var regexp = tokenDefinition[1];
+                var match = regexp.exec(expression);
+                if(match && match.length > 0 && match.index == 0) {
+                    var matchedString = match[0];
+                    if(type != 'whitespace') {
+                        var value;
+                        if(type == 'number') {
+                            value = Number(matchedString);
+                        } else if(type == 'element') {
+                            value = matchedString.substr(1);
+                        } else {
+                            value = matchedString;
                         }
-                        expression = expression.substring(matchedString.length);
-                        found = true;
-                        break;
+                        result.push([ type, value ]);
                     }
+                    expression = expression.substring(matchedString.length);
+                    found = true;
+                    break;
                 }
             }
             if(!found) {
