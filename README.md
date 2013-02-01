@@ -8,6 +8,9 @@ A simple, experimental JavaScript library to layout elements relative to each ot
 Version History
 ===============
 
+0.4.1
+- Fixed another dependency bug
+
 0.4.0
 - Added clear functions to remove existing layout rules and constants
 - Layout functions can now return the resulting layout rather than applying it to allow the user to apply it (for example with animations)
