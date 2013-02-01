@@ -241,12 +241,12 @@ var jslay = {};
 
         function addInOrder(rule, elementStack) {
             for(var j = 0; j < elementStack.length; j++) {
-                if(rule.element == elementStack[j]) {
+                if(rule.element == elementStack[j][0] && rule.property == elementStack[j][1]) {
                     return;
                 }
             }
             if(rule.dependencies.length > 0) {
-                elementStack.push(rule.element);
+                elementStack.push([rule.element, rule.property]);
                 for(j = 0; j < rule.dependencies.length; j++) {
                     addInOrder(rule.dependencies[j], elementStack);
                 }
