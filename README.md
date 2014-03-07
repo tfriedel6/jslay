@@ -8,6 +8,9 @@ A simple, experimental JavaScript library to layout elements relative to each ot
 Version History
 ===============
 
+0.4.2
+- Allow empty rules so that width and height can be set by the browser
+
 0.4.1
 - Fixed another dependency bug
 
