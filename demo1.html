@@ -8,8 +8,8 @@
                 jslay.setConstant('padding', 10);
                 jslay.setRule('button1', 'padding', 'padding', '100', '50');
                 jslay.setRule('button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height');
-                jslay.setRule('button3', 'padding', '#main.bottom - #button3.height - padding', '#main.width - 2 * padding', '50');
-                jslay.setRule('content', '#button1.right + padding', 'padding', '#main.width - padding - #content.left', '#button3.top - 2 * padding');
+                jslay.setRule('button3', 'padding', '#main.bottom - #.height - padding', '#main.width - 2 * padding', '50');
+                jslay.setRule('content', '#button1.right + padding', 'padding', '#main.width - padding - #.left', '#button3.top - 2 * padding');
                 jslay.layout();
                 window.onresize = function() {
                     jslay.layout();
