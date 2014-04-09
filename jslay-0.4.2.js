@@ -70,7 +70,7 @@ var jslay = {};
 
     var tokenDefinitions = [
         [ 'whitespace', /^[ \t]+/ ],
-        [ 'element', /^#[a-zA-Z_][a-zA-Z0-9_]*/ ],
+        [ 'element', /^#[a-zA-Z_]?[a-zA-Z0-9_]*/ ],
         [ 'name', /^[a-zA-Z_][a-zA-Z0-9_]*/ ],
         [ 'number', /^([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)/ ],
         [ 'operator', /^[\+\*\/\.\-]/ ],
@@ -281,7 +281,7 @@ var jslay = {};
             var rule = rules[i];
             elementName = rule.element;
             if (rule.rule) {
-                elementPositions[elementName][rule.property] = run(rule.rule, elementPositions);
+                elementPositions[elementName][rule.property] = run(rule.rule, elementPositions, elementName);
             } else {
                 element = document.getElementById(elementName);
                 if (rule.property == 'width') {
@@ -312,15 +312,15 @@ var jslay = {};
         }
     };
 
-    function run(expression, elementPositions) {
+    function run(expression, elementPositions, thisElement) {
         if (!expression) return;
         var expressionType = expression[0];
         if (expressionType == 'expression') {
-            var left = run(expression[1], elementPositions);
+            var left = run(expression[1], elementPositions, thisElement);
             var operator = expression[2];
-            var right = run(expression[3], elementPositions);
+            var right = run(expression[3], elementPositions, thisElement);
             if (operator == '.') {
-                var elementPosition = elementPositions[left];
+                var elementPosition = elementPositions[left == '' ? thisElement : left];
                 if (elementPosition == null) {
                     var element = document.getElementById(left);
                     elementPosition = {
