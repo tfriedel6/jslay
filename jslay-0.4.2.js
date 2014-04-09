@@ -73,7 +73,7 @@ var jslay = {};
         [ 'element', /^#[a-zA-Z_][a-zA-Z0-9_]*/ ],
         [ 'name', /^[a-zA-Z_][a-zA-Z0-9_]*/ ],
         [ 'number', /^([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)/ ],
-        [ 'operator', /^[\+\-\*\/\.]/ ],
+        [ 'operator', /^[\+\*\/\.\-]/ ],
         [ 'parenthesis', /^[\(\)]/ ]
     ];
 
@@ -283,7 +283,7 @@ var jslay = {};
             if(rule.rule) {
                 elementPositions[elementName][rule.property] = run(rule.rule, elementPositions);
             } else {
-                var element = document.getElementById(elementName);
+                element = document.getElementById(elementName);
                 if(rule.property == 'width') {
                     elementPositions[elementName]['width'] = element.offsetWidth;
                     elementPositions[elementName]['selfWidth'] = true;
