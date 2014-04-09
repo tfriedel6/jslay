@@ -14,15 +14,19 @@ var jslay = {};
         constants = {};
     };
 
-    jslay.setRule = function (element, left, top, width, height) {
+    jslay.setRule = function (element, rules) {
         deleteExistingRule(element, 'left');
         deleteExistingRule(element, 'top');
+        deleteExistingRule(element, 'right');
+        deleteExistingRule(element, 'bottom');
         deleteExistingRule(element, 'width');
         deleteExistingRule(element, 'height');
-        addLayoutRule(element, 'left', left);
-        addLayoutRule(element, 'top', top);
-        addLayoutRule(element, 'width', width);
-        addLayoutRule(element, 'height', height);
+        if (rules.left || rules.l) addLayoutRule(element, 'left', rules.left || rules.l);
+        if (rules.top || rules.t) addLayoutRule(element, 'top', rules.top || rules.t);
+        if (rules.right || rules.r) addLayoutRule(element, 'right', rules.right || rules.r);
+        if (rules.bottom || rules.b) addLayoutRule(element, 'bottom', rules.bottom || rules.b);
+        if (rules.width || rules.w) addLayoutRule(element, 'width', rules.width || rules.w);
+        if (rules.height || rules.h) addLayoutRule(element, 'height', rules.height || rules.h);
 
         rulesDirty = true;
     };
@@ -270,26 +274,49 @@ var jslay = {};
         for (var i = 0; i < elements.length; i++) {
             var elementName = elements[i];
             var element = document.getElementById(elementName);
-            elementPositions[elementName] = {
-                left: element.offsetLeft,
-                top: element.offsetTop,
-                width: element.offsetWidth,
-                height: element.offsetHeight
-            };
+            elementPositions[elementName] = getElementPos(element);
         }
         for (i = 0; i < rules.length; i++) {
             var rule = rules[i];
             elementName = rule.element;
+            if (!elementPositions[elementName].fromRules) {
+                elementPositions[elementName].fromRules = {};
+            }
+            elementPositions[elementName].fromRules[rule.property] = true;
+        }
+        for (i = 0; i < rules.length; i++) {
+            rule = rules[i];
+            elementName = rule.element;
+            var elementPosition = elementPositions[elementName];
             if (rule.rule) {
-                elementPositions[elementName][rule.property] = run(rule.rule, elementPositions, elementName);
+                elementPosition[rule.property] = run(rule.rule, elementPositions, elementName);
+                if (rule.property == 'left') {
+                    if (!elementPosition.fromRules['width']) elementPosition.width = elementPosition.right - elementPosition.left;
+                    if (!elementPosition.fromRules['right']) elementPosition.right = elementPosition.left + elementPosition.width;
+                } else if (rule.property == 'width') {
+                    if (!elementPosition.fromRules['left']) elementPosition.left = elementPosition.right - elementPosition.width;
+                    if (!elementPosition.fromRules['right']) elementPosition.right = elementPosition.left + elementPosition.width;
+                } else if (rule.property == 'right') {
+                    if (!elementPosition.fromRules['left']) elementPosition.left = elementPosition.right - elementPosition.width;
+                    if (!elementPosition.fromRules['width']) elementPosition.width = elementPosition.right - elementPosition.left;
+                } else if (rule.property == 'top') {
+                    if (!elementPosition.fromRules['height']) elementPosition.height = elementPosition.bottom - elementPosition.top;
+                    if (!elementPosition.fromRules['bottom']) elementPosition.bottom = elementPosition.top + elementPosition.height;
+                } else if (rule.property == 'height') {
+                    if (!elementPosition.fromRules['top']) elementPosition.top = elementPosition.bottom - elementPosition.height;
+                    if (!elementPosition.fromRules['bottom']) elementPosition.bottom = elementPosition.top + elementPosition.height;
+                } else if (rule.property == 'bottom') {
+                    if (!elementPosition.fromRules['top']) elementPosition.top = elementPosition.bottom - elementPosition.height;
+                    if (!elementPosition.fromRules['height']) elementPosition.height = elementPosition.bottom - elementPosition.top;
+                }
             } else {
                 element = document.getElementById(elementName);
                 if (rule.property == 'width') {
-                    elementPositions[elementName]['width'] = element.offsetWidth;
-                    elementPositions[elementName]['selfWidth'] = true;
+                    elementPosition['width'] = element.offsetWidth;
+                    elementPosition['selfWidth'] = true;
                 } else if (rule.property == 'height') {
-                    elementPositions[elementName]['height'] = element.offsetHeight;
-                    elementPositions[elementName]['selfHeight'] = true;
+                    elementPosition['height'] = element.offsetHeight;
+                    elementPosition['selfHeight'] = true;
                 }
             }
         }
@@ -323,20 +350,15 @@ var jslay = {};
                 var elementPosition = elementPositions[left == '' ? thisElement : left];
                 if (elementPosition == null) {
                     var element = document.getElementById(left);
-                    elementPosition = {
-                        left: element.offsetLeft,
-                        top: element.offsetTop,
-                        width: element.offsetWidth,
-                        height: element.offsetHeight
-                    };
+                    elementPosition = getElementPos(element);
                 }
-                if (right == 'right') {
-                    return elementPosition.left + elementPosition.width;
-                } else if (right == 'bottom') {
-                    return elementPosition.top + elementPosition.height;
-                } else {
-                    return elementPosition[right];
-                }
+                if (right == 'l') right = 'left';
+                else if (right == 'r') right = 'right';
+                else if (right == 't') right = 'top';
+                else if (right == 'b') right = 'bottom';
+                else if (right == 'w') right = 'width';
+                else if (right == 'h') right = 'height';
+                return elementPosition[right];
             } else if (operator == '+') {
                 return left + right;
             } else if (operator == '-') {
@@ -358,5 +380,16 @@ var jslay = {};
             return result;
         }
         return null;
+    }
+
+    function getElementPos(element) {
+        return {
+            left: element.offsetLeft,
+            top: element.offsetTop,
+            width: element.offsetWidth,
+            height: element.offsetHeight,
+            right: element.offsetLeft + element.offsetWidth,
+            bottom: element.offsetTop + element.offsetHeight
+        };
     }
 })();

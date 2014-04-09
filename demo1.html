@@ -6,10 +6,18 @@
         <script type="text/javascript">
             function init() {
                 jslay.setConstant('padding', 10);
-                jslay.setRule('button1', 'padding', 'padding', '100', '50');
-                jslay.setRule('button2', '#button1.left', '#button1.bottom + padding', '#button1.width', '#button1.height');
-                jslay.setRule('button3', 'padding', '#main.bottom - #.height - padding', '#main.width - 2 * padding', '50');
-                jslay.setRule('content', '#button1.right + padding', 'padding', '#main.width - padding - #.left', '#button3.top - 2 * padding');
+                jslay.setRule('button1',
+                        {l: 'padding', t: 'padding',
+                        w: '100', h: '50'});
+                jslay.setRule('button2',
+                        {l: '#button1.l', t: '#button1.b + padding',
+                        w: '#button1.w', h: '#button1.h'});
+                jslay.setRule('button3',
+                        {l: 'padding', b: '#main.b - padding',
+                        r: '#main.w - padding', h: '50'});
+                jslay.setRule('content',
+                        {l: '#button1.r + padding', t: 'padding',
+                        r: '#main.w - padding', b: '#button3.t - padding'});
                 jslay.layout();
                 window.onresize = function() {
                     jslay.layout();
